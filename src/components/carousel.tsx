@@ -1,18 +1,14 @@
 import { useEffect, useState } from 'react'
-import {
-  FaArrowAltCircleLeft,
-  FaArrowAltCircleRight,
-  FaArrowLeft,
-  FaArrowRight,
-  FaCircle,
-} from 'react-icons/fa'
+import { FaArrowAltCircleLeft, FaArrowAltCircleRight, FaCircle } from 'react-icons/fa'
 
+// Carousel component displays a collection of images with navigation controls
 const Carousel = ({ url, limit }: { url: string; limit: number }) => {
   const [images, setImages] = useState<string[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Fetch images from API on component mount or when dependencies change
   useEffect(() => {
     const fetchImages = async (url: string) => {
       try {
@@ -20,7 +16,6 @@ const Carousel = ({ url, limit }: { url: string; limit: number }) => {
         const response = await fetch(`${url}?limit=${limit} `)
         const data = await response.json()
         if (data) {
-          // const imageUrls = data.map((item: { url: string }) => item.url)
           setImages(data)
         }
         setLoading(false)
@@ -40,11 +35,12 @@ const Carousel = ({ url, limit }: { url: string; limit: number }) => {
     return <div>{error}</div>
   }
 
-  // console.log(images)
+  // Update current index when dot indicator is clicked
   function handleDots(index: number): void {
     setCurrentIndex(index)
   }
 
+  // Navigate carousel forward or backward
   function handleView(direction: 'next' | 'prev'): void {
     setCurrentIndex((prevIndex) => {
       if (direction === 'next') {
@@ -57,11 +53,13 @@ const Carousel = ({ url, limit }: { url: string; limit: number }) => {
 
   return (
     <div className='container mt-5 relative mx-auto flex  items-center justify-center overflow-hidden'>
+      {/* Previous button */}
       <FaArrowAltCircleLeft
         size={30}
         className='absolute z-10 left-4 text-gray-200'
         onClick={() => handleView('prev')}
       />
+      {/* Image display */}
       {images.length > 0 ? (
         images.map((image, index) => (
           <img
@@ -74,7 +72,7 @@ const Carousel = ({ url, limit }: { url: string; limit: number }) => {
       ) : (
         <div>No images to display</div>
       )}
-      {/* indicators */}
+      {/* Dot indicators for image navigation */}
       <div className='flex w-[200px] justify-between items-center absolute bottom-4'>
         {images.length > 0 &&
           images.map((_, index) => (
@@ -88,6 +86,7 @@ const Carousel = ({ url, limit }: { url: string; limit: number }) => {
             />
           ))}
       </div>
+      {/* Next button */}
       <FaArrowAltCircleRight
         size={30}
         className='absolute z-10 right-4 text-gray-200'
